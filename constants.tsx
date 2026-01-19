@@ -7,32 +7,42 @@ import {
   Package, 
   Layers, 
   Save, 
-  FileText, 
+  Settings, 
   History 
 } from 'lucide-react';
 import { ViewType } from './types';
 
 export const INITIAL_CATALOG = [
-  { sku: 'ESP-STA-3-DER', marca: 'Starbus', modelo: '3', lado: 'Der', min: 5, stock: 10 },
-  { sku: 'ESP-STA-3-IZQ', marca: 'Starbus', modelo: '3', lado: 'Izq', min: 5, stock: 8 },
-  { sku: 'ESP-MAR-G7-DER', marca: 'Marcopolo', modelo: 'G7', lado: 'Der', min: 5, stock: 12 },
-  { sku: 'ESP-MAR-G7-IZQ', marca: 'Marcopolo', modelo: 'G7', lado: 'Izq', min: 5, stock: 11 },
-];
-
-export const INITIAL_MPS = [
-  { sku: 'MP-VID-01', desc: 'Vidrio Espejado 4mm', min: 20, stock: 100, pending: 0 },
-  { sku: 'MP-PLA-ABS', desc: 'Carcasa Plástico ABS', min: 15, stock: 50, pending: 0 },
-  { sku: 'MP-LED-AMB', desc: 'Módulo LED Ámbar', min: 30, stock: 200, pending: 0 },
-  { sku: 'MP-CAB-15', desc: 'Cableado Interno 1.5m', min: 10, stock: 40, pending: 0 },
+  { sku: 'ESP-STA-3-DER', marca: 'Starbus', modelo: '3', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-STA-3-IZQ', marca: 'Starbus', modelo: '3', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-G7-DER', marca: 'Marcopolo', modelo: 'G7', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-G7-IZQ', marca: 'Marcopolo', modelo: 'G7', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-G7N-DER', marca: 'Marcopolo', modelo: 'G7 New', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-G7N-IZQ', marca: 'Marcopolo', modelo: 'G7 New', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-VIA-DER', marca: 'Marcopolo', modelo: 'Viaggio', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-MAR-VIA-IZQ', marca: 'Marcopolo', modelo: 'Viaggio', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-AVA-DER', marca: 'Saldivia', modelo: 'Avanzado', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-AVA-IZQ', marca: 'Saldivia', modelo: 'Avanzado', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-22-DER', marca: 'Saldivia', modelo: '22', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-22-IZQ', marca: 'Saldivia', modelo: '22', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-2911-DER', marca: 'Saldivia', modelo: '2911', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-2911-IZQ', marca: 'Saldivia', modelo: '2911', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-ARI-DER', marca: 'Saldivia', modelo: 'Aries', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-SAL-ARI-IZQ', marca: 'Saldivia', modelo: 'Aries', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-COM-345-DER', marca: 'Comil', modelo: '345', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-COM-345-IZQ', marca: 'Comil', modelo: '345', lado: 'Izq', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-COM-INV-DER', marca: 'Comil', modelo: 'Invictus', lado: 'Der', min: 5, stock: 0, wip: 0 },
+  { sku: 'ESP-COM-INV-IZQ', marca: 'Comil', modelo: 'Invictus', lado: 'Izq', min: 5, stock: 0, wip: 0 }
 ];
 
 export const TABS = [
   { id: ViewType.DASHBOARD, label: 'Panel', icon: LayoutDashboard },
-  { id: ViewType.OPERATIONS, label: 'Terminal de Planta', icon: Factory },
+  { id: ViewType.PLANNING, label: 'Planificación', icon: Calculator },
+  { id: ViewType.OPERATIONS, label: 'Operaciones', icon: Factory },
   { id: ViewType.PRODUCTS, label: 'Stock Real', icon: Package },
   { id: ViewType.RAW_MATERIALS, label: 'Mat. Primas', icon: Layers },
-  { id: ViewType.RECIPES, label: 'Recetas / BOM', icon: Save },
-  { id: ViewType.PLANNING, label: 'Simulador', icon: Calculator },
+  { id: ViewType.RECIPES, label: 'Recetas', icon: Save },
+  { id: ViewType.REPORTS, label: 'Datos y Nube', icon: Settings },
   { id: ViewType.HISTORY, label: 'Historial', icon: History }
 ];
 

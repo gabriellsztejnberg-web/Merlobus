@@ -18,6 +18,7 @@ export interface Product {
   lado: string;
   min: number;
   stock: number;
+  wip: number; // Stock en proceso de fabricación
   createdAt?: any;
 }
 
