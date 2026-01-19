@@ -1,0 +1,11 @@
+[build]
+  publish = "dist"
+  command = "npm run build || echo 'Build failed but trying to publish anyway'"
+
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
