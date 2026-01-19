@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "npm run build || echo 'Build failed but trying to publish anyway'"
+  command = "npx vite build"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
