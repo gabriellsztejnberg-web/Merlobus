@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export const Card: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className = "" }) => (
@@ -31,10 +30,14 @@ export const Button: React.FC<{
   );
 };
 
-export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
+export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({ className = "", ...props }) => (
   <input 
     {...props} 
-    className={`w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-[#2B3860] focus:ring-1 focus:ring-[#2B3860] transition-colors text-sm ${props.className}`}
+    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#2B3860] focus:ring-1 focus:ring-[#2B3860] transition-colors text-sm ${
+      className.includes('bg-') ? '' : 'bg-white'
+    } ${
+      className.includes('border-') ? '' : 'border-slate-300'
+    } ${className}`}
   />
 );
 
