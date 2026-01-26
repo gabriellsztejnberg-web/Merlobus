@@ -230,9 +230,9 @@ const App: React.FC = () => {
 
   // EXPORTADORES
   const exportToCsv = () => {
-    const headers = "Tipo,SKU,Descripcion,Stock,Minimo,En Taller\n";
-    const pRows = products.map(p => `Espejo,${p.sku},${p.marca} ${p.modelo},${p.stock},${p.min},${p.wip}`).join("\n");
-    const mRows = mps.map(m => `Insumo,${m.sku},${m.desc},${m.stock},${m.min},${m.wip || 0}`).join("\n");
+    const headers = "Tipo,SKU,Marca,Modelo,Lado,Stock,Minimo,En Taller\n";
+    const pRows = products.map(p => `Espejo,${p.sku},${p.marca},${p.modelo},${p.lado},${p.stock},${p.min},${p.wip}`).join("\n");
+    const mRows = mps.map(m => `Insumo,${m.sku},${m.desc},,,${m.stock},${m.min},${m.wip || 0}`).join("\n");
     const blob = new Blob([headers + pRows + "\n" + mRows], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -250,8 +250,8 @@ const App: React.FC = () => {
         
         <h2 style="margin-top:30px; background:#f1f5f9; padding:8px;">1. STOCK DE ESPEJOS TERMINADOS</h2>
         <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-          <thead><tr style="background:#eee;"><th>#</th><th>SKU</th><th>MARCA/MODELO</th><th>MIN</th><th>STOCK</th><th>TALLER</th></tr></thead>
-          <tbody>${products.map((p, i) => `<tr><td>${i+1}</td><td>${p.sku}</td><td>${p.marca} ${p.modelo}</td><td>${p.min}</td><td>${p.stock}</td><td>${p.wip}</td></tr>`).join('')}</tbody>
+          <thead><tr style="background:#eee;"><th>#</th><th>SKU</th><th>MARCA</th><th>MODELO</th><th>LADO</th><th>MIN</th><th>STOCK</th><th>TALLER</th></tr></thead>
+          <tbody>${products.map((p, i) => `<tr><td>${i+1}</td><td>${p.sku}</td><td>${p.marca}</td><td>${p.modelo}</td><td>${p.lado}</td><td>${p.min}</td><td>${p.stock}</td><td>${p.wip}</td></tr>`).join('')}</tbody>
         </table>
 
         <h2 style="margin-top:30px; background:#f1f5f9; padding:8px;">2. STOCK DE MATERIAS PRIMAS / INSUMOS</h2>
@@ -276,9 +276,9 @@ const App: React.FC = () => {
       lines.slice(1).forEach(row => {
         const v = row.split(',').map(s => s.trim());
         if (type === 'products') {
-          newItems.push({ id: Math.random().toString(36).substr(2, 9), sku: v[0] || 'N/A', marca: v[1] || '', modelo: v[2] || '', lado: v[3] || '', min: parseInt(v[4]) || 5, stock: parseInt(v[5]) || 0, wip: 0 });
+          newItems.push({ id: `p-${Date.now()}-${Math.random()}`, sku: v[0] || 'N/A', marca: v[1] || '', modelo: v[2] || '', lado: v[3] || '', min: parseInt(v[4]) || 5, stock: parseInt(v[5]) || 0, wip: 0 });
         } else {
-          newItems.push({ id: Math.random().toString(36).substr(2, 9), sku: v[0] || 'N/A', desc: v[1] || 'Insumo', min: parseInt(v[2]) || 10, stock: parseInt(v[3]) || 0, pending: 0, wip: 0 });
+          newItems.push({ id: `mp-${Date.now()}-${Math.random()}`, sku: v[0] || 'N/A', desc: v[1] || 'Insumo', min: parseInt(v[2]) || 10, stock: parseInt(v[3]) || 0, pending: 0, wip: 0 });
         }
       });
       if (type === 'products') setProducts(p => [...p, ...newItems]);
@@ -421,7 +421,6 @@ const App: React.FC = () => {
                     };
                     const updated = [...mps, newMp];
                     setMps(updated);
-                    // Forzar guardado inmediato para evitar pérdidas
                     localStorage.setItem(K.STABLE, JSON.stringify({ products, mps: updated, recipes, orders, history, user }));
                     setShowAddMp(false);
                     if (isOnline) supabase.from('mps').insert(newMp);
@@ -478,8 +477,10 @@ const App: React.FC = () => {
                   }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Input name="sku" placeholder="SKU" required />
                     <Input name="marca" placeholder="Marca" required />
-                    <Input name="modelo" placeholder="Modelo" />
+                    <Input name="modelo" placeholder="Modelo" required />
+                    <Input name="lado" placeholder="Lado (Der/Izq)" required />
                     <Input name="min" type="number" defaultValue="5" />
+                    <Input name="stock" type="number" defaultValue="0" />
                     <Button type="submit" className="col-span-full py-4 font-bold">GUARDAR SKU</Button>
                   </form>
                 </Card>
@@ -497,7 +498,7 @@ const App: React.FC = () => {
                   <Button variant="secondary" onClick={handlePrint} className="py-6" icon={Printer}>Imprimir PDF</Button>
                   <Button variant="secondary" onClick={exportToCsv} className="py-6" icon={FileSpreadsheet}>Exportar Excel</Button>
                   <Button variant="special" onClick={syncToCloud} className="col-span-full py-6" icon={CloudUpload}>Sincronizar todo con Supabase</Button>
-                  <Button variant="primary" onClick={() => { forceSave(); alert("✅ Guardado local completado."); }} className="col-span-full py-6" icon={Save}>Guardar Todo Localmente</Button>
+                  <Button variant="primary" onClick={() => { forceSave(); alert("✅ Guardado local completado."); }} className="col-span-full py-6" icon={Save}>Guardar Todo Ahora</Button>
                 </div>
               </Card>
             </div>
@@ -555,7 +556,15 @@ const InventoryTable = ({ data, type, onUpdateField, onDelete, onAction }: any) 
           <tr>
             <th className="p-5 w-12">#</th>
             <th className="p-5">CÓDIGO / SKU</th>
-            <th className="p-5">{type === 'products' ? 'PRODUCTO (Marca/Modelo)' : 'DESCRIPCIÓN INSUMO'}</th>
+            {type === 'products' ? (
+              <>
+                <th className="p-5">MARCA</th>
+                <th className="p-5">MODELO</th>
+                <th className="p-5">LADO</th>
+              </>
+            ) : (
+              <th className="p-5">DESCRIPCIÓN INSUMO</th>
+            )}
             <th className="p-5 text-center">MÍN</th>
             <th className="p-5 text-center">STOCK</th>
             <th className="p-5 text-center">TALLER</th>
@@ -572,7 +581,17 @@ const InventoryTable = ({ data, type, onUpdateField, onDelete, onAction }: any) 
                 <tr className={`hover:bg-slate-50 transition-all text-sm ${isEditing ? 'bg-blue-50/30' : ''}`}>
                   <td className="p-5 text-slate-400 font-mono text-xs">{index + 1}</td>
                   <td className="p-5 font-black text-slate-700">{isEditing ? <Input value={item.sku} onChange={e => onUpdateField(item.id, 'sku', e.target.value)} /> : item.sku}</td>
-                  <td className="p-5 text-slate-500 font-medium">{isEditing ? <Input value={type === 'products' ? item.marca : item.desc} onChange={e => onUpdateField(item.id, type === 'products' ? 'marca' : 'desc', e.target.value)} /> : (type === 'products' ? `${item.marca} ${item.modelo}` : item.desc)}</td>
+                  
+                  {type === 'products' ? (
+                    <>
+                      <td className="p-5 text-slate-500 font-medium">{isEditing ? <Input value={item.marca} onChange={e => onUpdateField(item.id, 'marca', e.target.value)} /> : item.marca}</td>
+                      <td className="p-5 text-slate-500 font-medium">{isEditing ? <Input value={item.modelo} onChange={e => onUpdateField(item.id, 'modelo', e.target.value)} /> : item.modelo}</td>
+                      <td className="p-5 text-slate-500 font-medium">{isEditing ? <Input value={item.lado} onChange={e => onUpdateField(item.id, 'lado', e.target.value)} /> : item.lado}</td>
+                    </>
+                  ) : (
+                    <td className="p-5 text-slate-500 font-medium">{isEditing ? <Input value={item.desc} onChange={e => onUpdateField(item.id, 'desc', e.target.value)} /> : item.desc}</td>
+                  )}
+
                   <td className="p-5 text-center"><Input type="number" className="w-20 mx-auto text-center font-bold" value={item.min} onChange={e => onUpdateField(item.id, 'min', parseInt(e.target.value) || 0)} /></td>
                   <td className="p-5 text-center"><Input type="number" className={`w-24 mx-auto text-center font-black ${isLow ? 'text-red-600 bg-red-50' : 'text-emerald-600'}`} value={item.stock} onChange={e => onUpdateField(item.id, 'stock', parseInt(e.target.value) || 0)} /></td>
                   <td className="p-5 text-center font-black text-blue-600">{item.wip || 0}</td>
@@ -584,7 +603,7 @@ const InventoryTable = ({ data, type, onUpdateField, onDelete, onAction }: any) 
                 </tr>
                 {isActionActive && (
                   <tr className="bg-slate-50/80 animate-in slide-in-from-top-1 border-b">
-                    <td colSpan={7} className="p-6">
+                    <td colSpan={type === 'products' ? 9 : 7} className="p-6">
                       <div className="flex flex-wrap items-end gap-6">
                         <div className="flex-none"><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Cant. a mover</label><Input type="number" className="w-24 font-black h-12 text-lg" value={qtyInput} onChange={e => setQtyInput(Number(e.target.value))} /></div>
                         {type === 'products' && <div className="flex-1 min-w-[200px]"><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Nota de Despacho</label><Input placeholder="Cliente / Remito..." value={cliente} onChange={e => setCliente(e.target.value)} /></div>}
