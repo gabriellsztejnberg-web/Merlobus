@@ -16,6 +16,82 @@
       background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(8px);
     }
+
+    /* ESTILOS DE IMPRESIÓN MEJORADOS */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1cm;
+      }
+      
+      body * {
+        visibility: hidden;
+      }
+      
+      .print-report, .print-report * {
+        visibility: visible;
+      }
+      
+      .print-report {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+      }
+
+      header, aside, button, .no-print, .search-bar, .ai-advice, input, .actions-cell {
+        display: none !important;
+      }
+
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        page-break-inside: auto;
+      }
+
+      tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
+
+      th, td {
+        border: 1px solid #000 !important;
+        padding: 6px !important;
+        font-size: 9pt !important;
+        color: black !important;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .critical-stock {
+        background-color: #ffcccc !important;
+        color: #ff0000 !important;
+        font-weight: bold;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+
+    .print-report {
+      display: none;
+    }
+
+    /* Custom Scrollbar for dark tables */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 10px;
+    }
   </style>
 <script type="importmap">
 {
@@ -33,7 +109,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <!-- Carga del punto de entrada de la aplicación -->
   <script type="module" src="./index.tsx"></script>
 </body>
 </html>

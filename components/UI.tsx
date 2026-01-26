@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export const Card: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className = "" }) => (
@@ -12,8 +13,14 @@ export const Button: React.FC<{
   disabled?: boolean;
   type?: "button" | "submit";
   icon?: React.ElementType;
-}> = ({ onClick, children, variant = "primary", className = "", disabled = false, type = "button", icon: Icon }) => {
-  const base = "px-4 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm";
+  size?: "sm" | "md" | "lg";
+}> = ({ onClick, children, variant = "primary", className = "", disabled = false, type = "button", icon: Icon, size = "md" }) => {
+  const base = "rounded-lg font-medium transition-all flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm";
+  const sizes = {
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-4 py-2",
+    lg: "px-6 py-3 text-base"
+  };
   const styles = {
     primary: "bg-[#2B3860] text-white hover:bg-[#1e2844] focus:ring-[#2B3860]",
     secondary: "bg-white text-[#2B3860] border border-slate-300 hover:bg-slate-50 focus:ring-slate-300",
@@ -23,8 +30,8 @@ export const Button: React.FC<{
     special: "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
   };
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${styles[variant]} ${className}`}>
-      {Icon && <Icon size={16} />}
+    <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${sizes[size]} ${styles[variant]} ${className}`}>
+      {Icon && <Icon size={size === 'sm' ? 14 : 16} />}
       {children}
     </button>
   );
@@ -33,6 +40,7 @@ export const Button: React.FC<{
 export const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({ className = "", ...props }) => (
   <input 
     {...props} 
+    onWheel={(e) => e.currentTarget.blur()} // FIX: Evita que el scroll cambie el número
     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#2B3860] focus:ring-1 focus:ring-[#2B3860] transition-colors text-sm ${
       className.includes('bg-') ? '' : 'bg-white'
     } ${

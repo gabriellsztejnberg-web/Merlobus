@@ -18,7 +18,7 @@ export interface Product {
   lado: string;
   min: number;
   stock: number;
-  wip: number; // Stock en proceso de fabricación
+  wip: number;
   createdAt?: any;
 }
 
@@ -29,19 +29,22 @@ export interface RawMaterial {
   min: number;
   stock: number;
   pending: number;
+  wip?: number; // Stock en proceso de fabricación para insumos semielaborados
   createdAt?: any;
 }
 
 export interface Recipe {
   id: string;
-  prodId: string;
-  mpId: string;
+  targetId: string; // ID del producto o insumo al que pertenece la receta
+  targetType: 'product' | 'mp';
+  mpId: string;   // ID del material utilizado
   qty: number;
 }
 
 export interface ProductionOrder {
   id: string;
-  prodId: string;
+  targetId: string;
+  targetType: 'product' | 'mp';
   productName: string;
   qty: number;
   status: 'in_progress' | 'completed';
